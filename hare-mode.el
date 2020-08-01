@@ -28,6 +28,11 @@
 
 ;;; Code:
 
+(defvar hare-mode-map
+   (let ((map (make-sparse-keymap)))
+     map)
+   "Keymap for `hare-mode'.")
+
 (defvar hare-mode-keywords
   '("alloc" "assert" "as" "break" "const" "continue" "def" "else"
     "export" "fn" "for" "free" "if" "is" "len" "let" "match" "return"
