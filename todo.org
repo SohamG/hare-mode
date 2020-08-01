@@ -1,0 +1,13 @@
+#+TODO: TODO(t) IN-PROGRESS(i) WAITING(w) POSTPONOED(p) | CANCELLED(c) DONE(d)
+
+* DONE .gitignore file
+CLOSED: [2020-08-01 Sat 15:20]
+
+* DONE COPYING file
+CLOSED: [2020-08-01 Sat 15:20]
+
+* TODO syntax table
+
+* TODO indent function
+
+* TODO index function for imenu
