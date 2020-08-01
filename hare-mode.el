@@ -43,15 +43,16 @@
 (defvar hare-mode-constants
   '("null" "true" "false"))
 
-(defvar hare-mode-font-lock-keywords
-  `((,(regexp-opt hare-mode-keywords 'symbols) . font-lock-keyword-face)
-    (,(regexp-opt hare-mode-constants 'symbols) . font-lock-constant-face)))
+(defvar hare-mode-font-lock-defaults
+  `((("\"\\.\\*\\?" . font-lock-string-face)
+     (,(regexp-opt hare-mode-keywords 'symbols) . font-lock-keyword-face)
+     (,(regexp-opt hare-mode-constants 'symbols) . font-lock-constant-face))))
 
 ;;;###autoload
 (define-derived-mode hare-mode prog-mode "Hare"
   "Major mode for editing `hare' files."
 
-  (setq-local font-lock-defaults '(hare-mode-font-lock-keywords))
+  (setq-local font-lock-defaults hare-mode-font-lock-defaults)
   (setq-local indent-tabs-mode t)
   (setq-local tab-width 8)
   (setq-local comment-start "/*")
