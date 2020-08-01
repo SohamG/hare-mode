@@ -52,9 +52,18 @@
      (,(regexp-opt hare-mode-constants 'symbols) . font-lock-constant-face)
      (,(regexp-opt hare-mode-builtins 'symbols) . font-lock-builtin-face))))
 
+(defconst hare-mode-syntax-table
+  (let ((st (make-syntax-table)))
+    ;; @ is part of symbols in Hare
+    (modify-syntax-entry ?@ "_" st)
+
+    ;; return our modified syntax table
+    st))
+
 ;;;###autoload
 (define-derived-mode hare-mode prog-mode "Hare"
   "Major mode for editing `hare' files."
+  :syntax-table hare-mode-syntax-table
 
   (setq-local font-lock-defaults hare-mode-font-lock-defaults)
   (setq-local indent-tabs-mode t)
