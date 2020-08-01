@@ -54,6 +54,15 @@
 
 (defconst hare-mode-syntax-table
   (let ((st (make-syntax-table)))
+    ;; strings and characters
+    (modify-syntax-entry ?\" "\"" st)
+    (modify-syntax-entry ?\' "\"" st)
+    (modify-syntax-entry ?\\ "\\" st)
+
+    ;; comments
+    (modify-syntax-entry ?/  ". 14b" st)
+    (modify-syntax-entry ?*  ". 23n" st)
+
     ;; @ is part of symbols in Hare
     (modify-syntax-entry ?@ "_" st)
 

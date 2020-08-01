@@ -13,7 +13,10 @@ CLOSED: [2020-08-01 Sat 16:23]
 
 * DOING index function for imenu
 
-* TODO comments regexp
+* DONE comments regexp
+CLOSED: [2020-08-01 Sat 17:19]
 
 * DONE @like builtins doesn't use face properly
 CLOSED: [2020-08-01 Sat 16:23]
+
+* TODO use =font-lock-type-face= for types
