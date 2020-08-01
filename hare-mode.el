@@ -33,10 +33,14 @@
     "fn" "for" "free" "if" "is" "len" "let" "match" "return" "size" "static"
     "switch" "use" "while" "u8" "u16" "u32" "u64" "i8" "i16" "i32" "i64" "int"
     "uint" "uintptr" "f32" "f64" "bool" "char" "str" "void" "struct" "union"
-    "nullable" "null" "true" "false"))
+    "nullable"))
+
+(defvar hare-mode-constants
+  '("null" "true" "false"))
 
 (defvar hare-mode-font-lock-keywords
-  `((,(regexp-opt hare-mode-keywords 'symbols) . font-lock-keyword-face)))
+  `((,(regexp-opt hare-mode-keywords 'symbols) . font-lock-keyword-face)
+    (,(regexp-opt hare-mode-constants 'symbols) . font-lock-constant-face)))
 
 ;;;###autoload
 (define-derived-mode hare-mode prog-mode "Hare"
