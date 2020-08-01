@@ -11,3 +11,7 @@ CLOSED: [2020-08-01 Sat 15:20]
 * TODO indent function
 
 * TODO index function for imenu
+
+* TODO comments regexp
+
+* TODO @like builtins doesn't use face properly
