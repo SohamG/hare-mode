@@ -34,19 +34,23 @@
    "Keymap for `hare-mode'.")
 
 (defvar hare-mode-keywords
-  '("alloc" "assert" "as" "break" "const" "continue" "def" "else"
-    "export" "fn" "for" "free" "if" "is" "len" "let" "match" "return"
-    "size" "static" "switch" "use" "while" "u8" "u16" "u32" "u64" "i8"
-    "i16" "i32" "i64" "int" "uint" "uintptr" "f32" "f64" "bool" "char"
-    "str" "void" "struct" "union" "nullable"))
+  '("as" "break" "const" "continue" "def" "else" "export" "fn" "for"
+    "if" "is" "let" "match" "return" "size" "static" "switch" "use"
+    "while" "u8" "u16" "u32" "u64" "i8" "i16" "i32" "i64" "int" "uint"
+    "uintptr" "f32" "f64" "bool" "char" "str" "void" "struct" "union"
+    "nullable"))
 
 (defvar hare-mode-constants
   '("null" "true" "false"))
 
+(defvar hare-mode-builtins
+  '("@init" "@symbol" "@test" "len" "offset" "free" "alloc" "assert"))
+
 (defvar hare-mode-font-lock-defaults
   `((("\"\\.\\*\\?" . font-lock-string-face)
      (,(regexp-opt hare-mode-keywords 'symbols) . font-lock-keyword-face)
-     (,(regexp-opt hare-mode-constants 'symbols) . font-lock-constant-face))))
+     (,(regexp-opt hare-mode-constants 'symbols) . font-lock-constant-face)
+     (,(regexp-opt hare-mode-builtins 'symbols) . font-lock-builtin-face))))
 
 ;;;###autoload
 (define-derived-mode hare-mode prog-mode "Hare"
