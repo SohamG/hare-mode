@@ -6,7 +6,8 @@ CLOSED: [2020-08-01 Sat 15:20]
 * DONE COPYING file
 CLOSED: [2020-08-01 Sat 15:20]
 
-* TODO syntax table
+* DONE initial syntax table
+CLOSED: [2020-08-01 Sat 16:23]
 
 * TODO indent function
 
@@ -14,4 +15,5 @@ CLOSED: [2020-08-01 Sat 15:20]
 
 * TODO comments regexp
 
-* TODO @like builtins doesn't use face properly
+* DONE @like builtins doesn't use face properly
+CLOSED: [2020-08-01 Sat 16:23]
