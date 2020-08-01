@@ -29,11 +29,11 @@
 ;;; Code:
 
 (defvar hare-mode-keywords
-  '("alloc" "assert" "as" "break" "const" "continue" "def" "else" "export"
-    "fn" "for" "free" "if" "is" "len" "let" "match" "return" "size" "static"
-    "switch" "use" "while" "u8" "u16" "u32" "u64" "i8" "i16" "i32" "i64" "int"
-    "uint" "uintptr" "f32" "f64" "bool" "char" "str" "void" "struct" "union"
-    "nullable"))
+  '("alloc" "assert" "as" "break" "const" "continue" "def" "else"
+    "export" "fn" "for" "free" "if" "is" "len" "let" "match" "return"
+    "size" "static" "switch" "use" "while" "u8" "u16" "u32" "u64" "i8"
+    "i16" "i32" "i64" "int" "uint" "uintptr" "f32" "f64" "bool" "char"
+    "str" "void" "struct" "union" "nullable"))
 
 (defvar hare-mode-constants
   '("null" "true" "false"))
@@ -46,11 +46,12 @@
 (define-derived-mode hare-mode prog-mode "Hare"
   "Major mode for editing `hare' files."
 
+  (setq-local font-lock-defaults '(hare-mode-font-lock-keywords))
   (setq-local indent-tabs-mode t)
   (setq-local tab-width 8)
   (setq-local comment-start "/*")
   (setq-local comment-end "*/")
-  (setq-local font-lock-defaults '(hare-mode-font-lock-keywords)))
+  (font-lock-ensure))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.ha\\'" . hare-mode))
