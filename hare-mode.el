@@ -76,20 +76,23 @@
        (rx line-start)
        (rx (opt "export" (1+ blank)))
        (rx (opt "@" (or "test" "init") (1+ blank)))
+       (rx (opt "@symbol(" (regexp "\".*\"") ")" (1+ blank)))
        (rx "fn" (1+ blank))
        (rx (group (or letter "_") (0+ (or letter "_" digit)))) ;; identifier
        (rx (0+ (syntax whitespace)))
        ;; Optional parameter list
        (rx (opt (syntax open-parenthesis)
-		(regexp ".*") ;; TODO: match proper paramaters list
+		(regexp ".*") ;; TODO: match proper parameters list
 		(syntax close-parenthesis)))
        (rx (0+ (syntax whitespace)))
-       (rx (opt "const"))
+       (rx (opt (1+ letter)))  ;; Optional nullable
        (rx (0+ (syntax whitespace)))
-       (rx (opt (opt "*") (1+ letter))) ;; result type
+       (rx (opt (1+ letter)))  ;; Optional const
        (rx (0+ (syntax whitespace)))
-       "=")
-     1)))
+       (rx (opt (or "*" "&")) (or (1+ (any letter ":")))) ;; result type
+       (rx (0+ (syntax whitespace)))
+       "="
+       ) 1)))
 
 ;;;###autoload
 (define-derived-mode hare-mode prog-mode "Hare"
