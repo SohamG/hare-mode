@@ -13,7 +13,12 @@ CLOSED: [2020-08-01 Sat 16:23]
 
 * DONE index function for imenu
 
-* TODO avoid using symbol at point as default value on imenu
+* CANCELLED avoid using symbol at point as default value on imenu
+CLOSED: [2020-08-03 Mon 15:31]
+Seems like when you're on a symbol, imenu uses it as default value. But
+when you're in whitespace, it never shows that prompt with the default
+value. I've not found a way of avoiding using a default value, but seems
+to me that can be useful from time to time.
 
 * DONE comments regexp
 CLOSED: [2020-08-01 Sat 17:19]
