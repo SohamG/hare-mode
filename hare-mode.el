@@ -47,7 +47,8 @@
   '("null" "true" "false"))
 
 (defvar hare-mode-builtins
-  '("@init" "@symbol" "@test" "len" "offset" "free" "alloc" "assert"))
+  '("@init" "@symbol" "@test" "@fini" "len" "offset" "free" "alloc"
+    "assert"))
 
 (defvar hare-mode-font-lock-defaults
   `((("\"\\.\\*\\?" . font-lock-string-face)
@@ -79,14 +80,14 @@
      ,(concat
        (rx line-start)
        (rx (opt "export" (1+ blank)))
-       (rx (opt "@" (or "test" "init") (1+ blank)))
+       (rx (opt "@" (or "test" "init" "fini") (1+ blank)))
        (rx (opt "@symbol(" (regexp "\".*\"") ")" (1+ blank)))
        (rx "fn" (1+ blank))
        (rx (group (or letter "_") (0+ (or letter "_" digit)))) ;; identifier
        (rx (0+ (syntax whitespace)))
        ;; Optional parameter list
        (rx (opt (syntax open-parenthesis)
-		(regexp ".*") ;; TODO: match proper parameters list
+		(0+ (any letter ":" "*" "," "_" "[" "]" digit whitespace))
 		(syntax close-parenthesis)))
        (rx (0+ (syntax whitespace)))
        (rx (opt (1+ letter)))  ;; Optional nullable
