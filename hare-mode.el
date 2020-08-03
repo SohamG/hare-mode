@@ -36,7 +36,10 @@
 (defvar hare-mode-keywords
   '("as" "break" "const" "continue" "def" "else" "export" "fn" "for"
     "if" "is" "let" "match" "return" "size" "static" "switch" "use"
-    "while" "u8" "u16" "u32" "u64" "i8" "i16" "i32" "i64" "int" "uint"
+    "while"))
+
+(defvar hare-mode-types
+  '("u8" "u16" "u32" "u64" "i8" "i16" "i32" "i64" "int" "uint"
     "uintptr" "f32" "f64" "bool" "char" "str" "void" "struct" "union"
     "nullable"))
 
@@ -50,7 +53,8 @@
   `((("\"\\.\\*\\?" . font-lock-string-face)
      (,(regexp-opt hare-mode-keywords 'symbols) . font-lock-keyword-face)
      (,(regexp-opt hare-mode-constants 'symbols) . font-lock-constant-face)
-     (,(regexp-opt hare-mode-builtins 'symbols) . font-lock-builtin-face))))
+     (,(regexp-opt hare-mode-builtins 'symbols) . font-lock-builtin-face)
+     (,(regexp-opt hare-mode-types 'symbols) . font-lock-type-face))))
 
 (defconst hare-mode-syntax-table
   (let ((st (make-syntax-table)))

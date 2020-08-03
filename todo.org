@@ -11,7 +11,9 @@ CLOSED: [2020-08-01 Sat 16:23]
 
 * TODO indent function
 
-* DOING index function for imenu
+* DONE index function for imenu
+
+* TODO avoid using symbol at point as default value on imenu
 
 * DONE comments regexp
 CLOSED: [2020-08-01 Sat 17:19]
@@ -19,4 +21,4 @@ CLOSED: [2020-08-01 Sat 17:19]
 * DONE @like builtins doesn't use face properly
 CLOSED: [2020-08-01 Sat 16:23]
 
-* TODO use =font-lock-type-face= for types
+* DONE use =font-lock-type-face= for types
