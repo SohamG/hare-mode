@@ -28,6 +28,8 @@
 
 ;;; Code:
 
+(require 'smie)
+
 (defconst hare-mode--regexp-declaration-line-beginning
   (concat "^" (regexp-opt hare-mode-keywords))
   "Regexp matching `hare-mode-keywords' on line beginning.")
@@ -120,11 +122,44 @@
   (unless arg (setq arg 1))
   (re-search-forward hare-mode--regexp-declaration-end nil t arg))
 
+(defconst hare-mode-smie-grammar
+  (smie-prec2->grammar
+   (smie-merge-prec2s
+    (smie-bnf->prec2
+     '((id)
+       (expr ("[" exprs "]")
+             ("{" exprs "}"))
+       (sexp ("(" exprs ")"))
+       (exprs (exprs ";" exprs)
+              (exprs "," exprs)
+              (expr))
+       (branches (branches "|" branches))
+       (decls (sexp "=" expr))
+       (toplevel (decls)
+                 (expr)
+                 (toplevel ";" toplevel)))
+     '((assoc "|"))
+     '((assoc ";") (assoc ",")))
+    (smie-precs->prec2
+     '((assoc "+" "-" "^")
+       (assoc "/" "*" "%"))))))
+
+(defun hare-mode-smie-rules (kind token)
+  (pcase (cons kind token)
+    (`(:elem . basic) hare-mode-indent-offset)
+    (`(:before . "{") (if (smie-rule-hanging-p) (smie-rule-parent)))
+    (`(:before . "=") (if (smie-rule-hanging-p) hare-mode-indent-offset))
+    (`(,_ . ,(or `";" `",")) (smie-rule-separator kind))))
+
+(defun hare-mode-indent-smie-setup ()
+  (smie-setup hare-mode-smie-grammar #'hare-mode-smie-rules))
+
 ;;;###autoload
 (define-derived-mode hare-mode prog-mode "Hare"
   "Major mode for editing `hare' files."
   :syntax-table hare-mode-syntax-table
 
+  (hare-mode-indent-smie-setup)
   (setq-local beginning-of-defun-function #'hare-mode-beginning-of-defun)
   (setq-local end-of-defun-function #'hare-mode-end-of-defun)
 
