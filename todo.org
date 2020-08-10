@@ -10,7 +10,71 @@ CLOSED: [2020-08-01 Sat 15:20]
 CLOSED: [2020-08-01 Sat 16:23]
 
 * TODO indent function
+using SMIE, we get a lot of indentation help from the
+get-go.  However, it is pretty hard to configure.  This commit is only a first
+attempt, offering an initial jump-off point.  It indents most of the examples
+found at [[https://harelang.org/style/][Style guide]], but not all yet.
 
+Notably:
+
+1.
+
+#+begin_src hare
+  let x = struct {
+          x: int = 10,
+          y: int = 10,
+  };
+#+end_src
+
+becomes
+
+#+begin_src hare
+  let x = struct {
+          x: int = 10,
+                   y: int = 10,
+  };
+#+end_src
+
+2.
+
+#+begin_src hare
+  let result = frobnicate_the_frobs(scary_frob,
+          sporty_from, baby_frob);
+#+end_src
+
+becomes
+
+#+begin_src hare
+  let result = frobnicate_the_frobs(scary_frob,
+                                    sporty_from, baby_frob);
+#+end_src
+
+
+3.
+
+#+begin_src hare
+  2 + 4 + 5;
+  2 + (5 * 10);
+  -10 * 20;
+  !foobar;
+  let x: int = 2
+    + 2
+    + 2
+    + 2;
+#+end_src
+
+becomes
+
+#+begin_src hare
+  2 + 4 + 5;
+          2 + (5 * 10);
+              -10 * 20;
+              !foobar;
+              let x: int = 2
+  + 2
+  + 2
+  + 2;
+#+end_src
 * DONE index function for imenu
 
 * CANCELLED avoid using symbol at point as default value on imenu
