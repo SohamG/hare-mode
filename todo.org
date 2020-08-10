@@ -15,6 +15,8 @@ get-go.  However, it is pretty hard to configure.  This commit is only a first
 attempt, offering an initial jump-off point.  It indents most of the examples
 found at [[https://harelang.org/style/][Style guide]], but not all yet.
 
+Also, useful article [[https://programming-journal.org/2021/5/1/][here]].
+
 Notably:
 
 1.
