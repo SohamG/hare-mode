@@ -26,4 +26,6 @@ CLOSED: [2020-08-01 Sat 17:19]
 * DONE @like builtins doesn't use face properly
 CLOSED: [2020-08-01 Sat 16:23]
 
+* DONE beginning/end-of-defun-functions
+  CLOSED: [2020-08-10 ma. 20:14]
 * DONE use =font-lock-type-face= for types

@@ -28,6 +28,15 @@
 
 ;;; Code:
 
+(defconst hare-mode--regexp-declaration-line-beginning
+  (concat "^" (regexp-opt hare-mode-keywords))
+  "Regexp matching `hare-mode-keywords' on line beginning.")
+
+(defconst hare-mode--regexp-declaration-end
+  (regexp-opt '("};" ");"))
+  "Regexp matching declaration endings.")
+
+
 (defvar hare-mode-map
    (let ((map (make-sparse-keymap)))
      map)
@@ -99,10 +108,23 @@
        "="
        ) 1)))
 
+(defun hare-mode-beginning-of-defun (&optional arg)
+  (interactive "p")
+  (unless arg (setq arg 1))
+  (re-search-backward hare-mode--regexp-declaration-line-beginning nil t arg))
+
+(defun hare-mode-end-of-defun (&optional arg)
+  (interactive "p")
+  (unless arg (setq arg 1))
+  (re-search-forward hare-mode--regexp-declaration-end nil t arg))
+
 ;;;###autoload
 (define-derived-mode hare-mode prog-mode "Hare"
   "Major mode for editing `hare' files."
   :syntax-table hare-mode-syntax-table
+
+  (setq-local beginning-of-defun-function #'hare-mode-beginning-of-defun)
+  (setq-local end-of-defun-function #'hare-mode-end-of-defun)
 
   (setq-local font-lock-defaults hare-mode-font-lock-defaults)
   (setq-local indent-tabs-mode t)
