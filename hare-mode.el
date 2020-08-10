@@ -36,6 +36,8 @@
   (regexp-opt '("};" ");"))
   "Regexp matching declaration endings.")
 
+(defconst hare-mode-indent-offset 8
+  "Indent hare code by this number of spaces")
 
 (defvar hare-mode-map
    (let ((map (make-sparse-keymap)))
@@ -128,7 +130,7 @@
 
   (setq-local font-lock-defaults hare-mode-font-lock-defaults)
   (setq-local indent-tabs-mode t)
-  (setq-local tab-width 8)
+  (setq-local tab-width hare-mode-indent-offset)
   (setq-local comment-start "/*")
   (setq-local comment-end "*/")
   (setq imenu-generic-expression hare-mode-imenu-generic-expression)
