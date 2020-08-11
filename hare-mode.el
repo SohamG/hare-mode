@@ -122,6 +122,21 @@
   (unless arg (setq arg 1))
   (re-search-forward hare-mode--regexp-declaration-end nil t arg))
 
+(defun hare-mode--find-token (token)
+  "Check if TOKEN is at beginning of the indentation/line."
+  (save-excursion
+    (back-to-indentation)
+    (looking-at-p token)))
+
+(defun hare-mode--indent-offset-from-token (token &optional offset-level)
+  "Return (COLUMN . OFFSET) as per the SMIE spec."
+  (unless offset-level (setq offset-level 1))
+  (cons 'column
+        (+ (* hare-mode-indent-offset offset-level)
+           (save-excursion
+             (re-search-backward token (point-min) t 1)
+             (current-indentation)))))
+
 (defconst hare-mode-smie-grammar
   (smie-prec2->grammar
    (smie-merge-prec2s
@@ -149,10 +164,15 @@
 (defun hare-mode-smie-rules (kind token)
   (pcase (cons kind token)
     (`(:elem . basic) hare-mode-indent-offset)
-    (`(,_ . ",") (cond
-                  ((looking-back ".*=.*") (smie-rule-parent))
-                  (t
-                   (smie-rule-separator kind))))
+    (`(,_ . ",")
+     (cond
+      ((hare-mode--find-token "let")
+       (hare-mode--indent-offset-from-token "let"))
+      ((hare-mode--find-token "if")
+       (hare-mode--indent-offset-from-token "if" 2))
+      ((looking-back ".*=.*") (smie-rule-parent))
+      (t
+       (smie-rule-separator kind))))
     (`(:before . "{") (if (smie-rule-hanging-p) (smie-rule-parent)))
     (`(:before . "(") (if (smie-rule-hanging-p) (smie-rule-parent)))
     (`(:before . "=") (if (smie-rule-hanging-p) hare-mode-indent-offset))))
