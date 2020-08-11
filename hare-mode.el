@@ -30,22 +30,6 @@
 
 (require 'smie)
 
-(defconst hare-mode--regexp-declaration-line-beginning
-  (concat "^" (regexp-opt hare-mode-keywords))
-  "Regexp matching `hare-mode-keywords' on line beginning.")
-
-(defconst hare-mode--regexp-declaration-end
-  (regexp-opt '("};" ");"))
-  "Regexp matching declaration endings.")
-
-(defconst hare-mode-indent-offset 8
-  "Indent hare code by this number of spaces")
-
-(defvar hare-mode-map
-   (let ((map (make-sparse-keymap)))
-     map)
-   "Keymap for `hare-mode'.")
-
 (defvar hare-mode-keywords
   '("as" "break" "const" "continue" "def" "else" "export" "fn" "for"
     "if" "is" "let" "match" "return" "size" "static" "switch" "use"
@@ -62,6 +46,22 @@
 (defvar hare-mode-builtins
   '("@init" "@symbol" "@test" "@fini" "len" "offset" "free" "alloc"
     "assert"))
+
+(defconst hare-mode--regexp-declaration-line-beginning
+  (concat "^" (regexp-opt hare-mode-keywords))
+  "Regexp matching `hare-mode-keywords' on line beginning.")
+
+(defconst hare-mode--regexp-declaration-end
+  (regexp-opt '("};" ");"))
+  "Regexp matching declaration endings.")
+
+(defconst hare-mode-indent-offset 8
+  "Indent hare code by this number of spaces")
+
+(defvar hare-mode-map
+   (let ((map (make-sparse-keymap)))
+     map)
+   "Keymap for `hare-mode'.")
 
 (defvar hare-mode-font-lock-defaults
   `((("\"\\.\\*\\?" . font-lock-string-face)
