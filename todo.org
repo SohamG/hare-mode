@@ -22,21 +22,6 @@ Notably:
 1.
 
 #+begin_src hare
-  let result = frobnicate_the_frobs(scary_frob,
-          sporty_from, baby_frob);
-#+end_src
-
-becomes
-
-#+begin_src hare
-  let result = frobnicate_the_frobs(scary_frob,
-                                    sporty_from, baby_frob);
-#+end_src
-
-
-2.
-
-#+begin_src hare
   2 + 4 + 5;
   2 + (5 * 10);
   -10 * 20;
@@ -60,7 +45,7 @@ becomes
   + 2;
 #+end_src
 
-3.
+2.
 #+begin_src hare
   let x = 10;
   let x: int = 10;
@@ -77,7 +62,7 @@ becomes
   let x = 10;
   let x: int = 10;
   let x: int = 10,
-  y: int = 20,
+          y: int = 20,
   z: int = 30;
   let x: int =
           do_work(lots, of, parameters);
