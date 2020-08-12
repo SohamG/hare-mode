@@ -142,43 +142,30 @@
    (smie-merge-prec2s
     (smie-bnf->prec2
      '((id)
-       (expr ("[" exprs "]")
-             ("{" exprs "}"))
-       (exprs (exprs "," exprs)
-              (expr))
+       (exprs (exprs "," exprs))
        (branches (branches "|" branches))
-       (decls (expr "=" expr)
-              (expr "+" expr)
-              (expr "-" expr)
-              (expr "*" expr)
-              (expr "/" expr))
-       (toplevel (decls)
-                 (expr)
-                 (toplevel ";" toplevel)))
+       (toplevel (toplevel ";" toplevel)))
      '((assoc "|"))
      '((assoc ";") (assoc ",")))
     (smie-precs->prec2
      '((assoc "+" "-" "^")
-       (assoc "/" "*" "%"))))))
+       (assoc "/" "*" "%")
+       (nonassoc "==" "!="))))))
 
 (defun hare-mode-smie-rules (kind token)
   (pcase (cons kind token)
     (`(:elem . basic) hare-mode-indent-offset)
-    (`(,_ . ",")
+    (`(:after . ",")
      (cond
       ((hare-mode--find-token "let")
        (hare-mode--indent-offset-from-token "let"))
       ((hare-mode--find-token "if")
        (hare-mode--indent-offset-from-token "if" 2))
-      ((looking-back ".*=.*") (smie-rule-parent))
       (t
        (smie-rule-separator kind))))
-    (`(:before . "{") (if (smie-rule-hanging-p) (smie-rule-parent)))
-    (`(:before . "(") (if (smie-rule-hanging-p) (smie-rule-parent)))
+    (`(:after . ";") (smie-rule-separator kind))
+    (`(:before . ,(or "(" "[" "{")) (if (smie-rule-hanging-p) (smie-rule-parent)))
     (`(:before . "=") (if (smie-rule-hanging-p) hare-mode-indent-offset))))
-
-(defun hare-mode-indent-smie-setup ()
-  (smie-setup hare-mode-smie-grammar #'hare-mode-smie-rules))
 
 ;;;###autoload
 (define-derived-mode hare-mode prog-mode "Hare"
