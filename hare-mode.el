@@ -5,6 +5,7 @@
 
 ;; Author: Benjamín Buccianti <benjamin@buccianti.dev>
 ;;         Amin Bandali <bandali@gnu.org>
+;;         Theodor Thornhill <theo@thornhill.no>
 ;; Keywords: languages
 ;; URL: https://git.sr.ht/~bbuccianti/hare-mode
 ;; Version: 0.1.0
@@ -60,6 +61,8 @@
 
 (defvar hare-mode-map
    (let ((map (make-sparse-keymap)))
+     (define-key map (kbd "<tab>") 'hare-mode-indent-forward)
+     (define-key map (kbd "<backtab>") 'hare-mode-indent-backward)
      map)
    "Keymap for `hare-mode'.")
 
@@ -122,6 +125,26 @@
   (unless arg (setq arg 1))
   (re-search-forward hare-mode--regexp-declaration-end nil t arg))
 
+(defun hare-mode-do-indent (indent)
+  (if (<= (current-column) (current-indentation))
+      (ignore-errors (indent-line-to indent))
+    (save-excursion (ignore-errors (indent-line-to indent)))))
+
+(defun hare-mode-indent-forward (&optional arg)
+  "Indent line to the next tabstop."
+  (interactive "p")
+  (or arg (setq arg 1))
+  (hare-mode-do-indent
+   (indent-next-tab-stop (* arg (current-indentation)))))
+
+(defun hare-mode-indent-backward (&optional arg)
+  "Indent backwards to the nearest tabstop"
+  (interactive "p")
+  (or arg (setq arg 1))
+  (hare-mode-do-indent
+   (indent-next-tab-stop
+    (save-excursion (back-to-indentation) (current-column)) t)))
+
 (defun hare-mode--backward-token ()
   (forward-comment (- (point)))
   (buffer-substring-no-properties
@@ -140,29 +163,14 @@
          (skip-syntax-forward "w_'"))
      (point))))
 
-(defun hare-mode--find-token (token)
-  "Check if TOKEN is at beginning of the indentation/line."
-  (save-excursion
-    (back-to-indentation)
-    (looking-at-p token)))
-
-(defun hare-mode--indent-offset-from-token (token &optional offset-level)
-  "Return (COLUMN . OFFSET) as per the SMIE spec."
-  (unless offset-level (setq offset-level 1))
-  (cons 'column
-        (+ (* hare-mode-indent-offset offset-level)
-           (save-excursion
-             (re-search-backward token (point-min) t 1)
-             (current-indentation)))))
-
 (defconst hare-mode-smie-grammar
   (smie-prec2->grammar
    (smie-merge-prec2s
     (smie-bnf->prec2
      '((id)
-       (exprs (exprs "," exprs))
        (branches (branches "|" branches))
-       (toplevel (toplevel ";" toplevel)))
+       (toplevel (toplevel "," toplevel)
+                 (toplevel ";" toplevel)))
      '((assoc "|"))
      '((assoc ";") (assoc ",")))
     (smie-precs->prec2
@@ -173,14 +181,8 @@
 (defun hare-mode-smie-rules (kind token)
   (pcase (cons kind token)
     (`(:elem . basic) hare-mode-indent-offset)
-    (`(:after . ",")
-     (cond
-      ((hare-mode--find-token "let")
-       (hare-mode--indent-offset-from-token "let"))
-      ((hare-mode--find-token "if")
-       (hare-mode--indent-offset-from-token "if" 2))
-      (t
-       (smie-rule-separator kind))))
+    (`(:after . ",") (smie-rule-separator kind))
+    (`(:before . ";") (smie-rule-parent))
     (`(:after . ";") (smie-rule-separator kind))
     (`(:before . ,(or "(" "[" "{")) (if (smie-rule-hanging-p) (smie-rule-parent)))
     (`(:before . "=") (if (smie-rule-hanging-p) hare-mode-indent-offset))))
@@ -190,6 +192,10 @@
   "Major mode for editing `hare' files."
   :syntax-table hare-mode-syntax-table
 
+  (setq-local tab-width hare-mode-indent-offset)
+  (setq-local indent-tabs-mode t)
+  (when (boundp 'electric-indent-inhibit) (setq electric-indent-inhibit t))  
+
   (smie-setup hare-mode-smie-grammar #'hare-mode-smie-rules
               :forward-token #'hare-mode--forward-token
               :backward-token #'hare-mode--backward-token)
@@ -198,8 +204,6 @@
   (setq-local end-of-defun-function #'hare-mode-end-of-defun)
 
   (setq-local font-lock-defaults hare-mode-font-lock-defaults)
-  (setq-local tab-width hare-mode-indent-offset)
-  (setq-local indent-tabs-mode t)
   (setq-local comment-start "/*")
   (setq-local comment-end "*/")
   (setq imenu-generic-expression hare-mode-imenu-generic-expression)
