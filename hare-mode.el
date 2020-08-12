@@ -62,7 +62,7 @@
   "Regexp matching declaration endings.")
 
 (defconst hare-mode-indent-offset 8
-  "Indent hare code by this number of spaces")
+  "Indent hare code by this number of spaces.")
 
 (defvar hare-mode-map
    (let ((map (make-sparse-keymap)))
@@ -153,7 +153,7 @@ represented by `hare-mode--regexp-declaration-end'."
 
 (defun hare-mode-indent-backward (&optional arg)
   "Indent backwards to the nearest tabstop.
- ARG tabstops from the `current-column'"
+ARG tabstops from the `current-column'"
   (interactive "p")
   (or arg (setq arg 1))
   (hare-mode--do-indent
@@ -204,8 +204,12 @@ before changing the `hare-mode--smie-grammar'."
 (defun hare-mode-smie-rules (kind token)
   "Rules for the smie grammar.
 
-See info manual for the most thorough documentation of this
-feature."
+Argument KIND is one of \":elem\" \":before\" \":after\"
+\":list-intro\", and is used to designate how to indent.
+
+Argument TOKEN is the token in question, either defined by SMIE
+or a custom made one.  See info manual for the most thorough
+documentation of this feature."
   (pcase (cons kind token)
     (`(:elem . basic) hare-mode-indent-offset)
     (`(:after . ",") (smie-rule-separator kind))
@@ -221,7 +225,7 @@ feature."
 
   (setq-local tab-width hare-mode-indent-offset)
   (setq-local indent-tabs-mode t)
-  (when (boundp 'electric-indent-inhibit) (setq electric-indent-inhibit t))  
+  (when (boundp 'electric-indent-inhibit) (setq electric-indent-inhibit t))
 
   (smie-setup hare-mode--smie-grammar #'hare-mode-smie-rules
               :forward-token #'hare-mode--forward-token
