@@ -122,6 +122,24 @@
   (unless arg (setq arg 1))
   (re-search-forward hare-mode--regexp-declaration-end nil t arg))
 
+(defun hare-mode--backward-token ()
+  (forward-comment (- (point)))
+  (buffer-substring-no-properties
+   (point)
+   (progn
+     (if (zerop (skip-syntax-backward "."))
+         (skip-syntax-backward "w_'"))
+     (point))))
+
+(defun hare-mode--forward-token ()
+  (forward-comment (point-max))
+  (buffer-substring-no-properties
+   (point)
+   (progn
+     (if (zerop (skip-syntax-forward "."))
+         (skip-syntax-forward "w_'"))
+     (point))))
+
 (defun hare-mode--find-token (token)
   "Check if TOKEN is at beginning of the indentation/line."
   (save-excursion
@@ -172,13 +190,16 @@
   "Major mode for editing `hare' files."
   :syntax-table hare-mode-syntax-table
 
-  (hare-mode-indent-smie-setup)
+  (smie-setup hare-mode-smie-grammar #'hare-mode-smie-rules
+              :forward-token #'hare-mode--forward-token
+              :backward-token #'hare-mode--backward-token)
+
   (setq-local beginning-of-defun-function #'hare-mode-beginning-of-defun)
   (setq-local end-of-defun-function #'hare-mode-end-of-defun)
 
   (setq-local font-lock-defaults hare-mode-font-lock-defaults)
-  (setq-local indent-tabs-mode t)
   (setq-local tab-width hare-mode-indent-offset)
+  (setq-local indent-tabs-mode t)
   (setq-local comment-start "/*")
   (setq-local comment-end "*/")
   (setq imenu-generic-expression hare-mode-imenu-generic-expression)
