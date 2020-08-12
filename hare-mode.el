@@ -35,19 +35,23 @@
 (defvar hare-mode-keywords
   '("as" "break" "const" "continue" "def" "else" "export" "fn" "for"
     "if" "is" "let" "match" "return" "size" "static" "switch" "use"
-    "while"))
+    "while")
+  "Keywords used in `hare-mode'.")
 
 (defvar hare-mode-types
   '("u8" "u16" "u32" "u64" "i8" "i16" "i32" "i64" "int" "uint"
     "uintptr" "f32" "f64" "bool" "char" "str" "void" "struct" "union"
-    "nullable"))
+    "nullable")
+  "Types used in `hare-mode'.")
 
 (defvar hare-mode-constants
-  '("null" "true" "false"))
+  '("null" "true" "false")
+  "Constants used in `hare-mode'.")
 
 (defvar hare-mode-builtins
   '("@init" "@symbol" "@test" "@fini" "len" "offset" "free" "alloc"
-    "assert"))
+    "assert")
+  "Built in identifiers used in `hare-mode'.")
 
 (defconst hare-mode--regexp-declaration-line-beginning
   (concat "^" (regexp-opt hare-mode-keywords))
@@ -117,36 +121,50 @@
        ) 1)))
 
 (defun hare-mode-beginning-of-defun (&optional arg)
+  "Jump to the beginning of a \"defun\".
+
+Search backwards for ARG amount of occurrences of identifiers
+represented by `hare-mode--regexp-declaration-line-beginning'."
   (interactive "p")
   (unless arg (setq arg 1))
   (re-search-backward hare-mode--regexp-declaration-line-beginning nil t arg))
 
 (defun hare-mode-end-of-defun (&optional arg)
+  "Jump to the end of a \"defun\".
+
+Search backwards for ARG amount of occurrences of identifiers
+represented by `hare-mode--regexp-declaration-end'."
   (interactive "p")
   (unless arg (setq arg 1))
   (re-search-forward hare-mode--regexp-declaration-end nil t arg))
 
-(defun hare-mode-do-indent (indent)
+(defun hare-mode--do-indent (indent)
+  "Helper to indent a line to the column at INDENT."
   (if (<= (current-column) (current-indentation))
       (ignore-errors (indent-line-to indent))
     (save-excursion (ignore-errors (indent-line-to indent)))))
 
 (defun hare-mode-indent-forward (&optional arg)
-  "Indent line to the next tabstop."
+  "Indent line to the next ARG tabstop."
   (interactive "p")
   (or arg (setq arg 1))
-  (hare-mode-do-indent
+  (hare-mode--do-indent
    (indent-next-tab-stop (* arg (current-indentation)))))
 
 (defun hare-mode-indent-backward (&optional arg)
-  "Indent backwards to the nearest tabstop"
+  "Indent backwards to the nearest tabstop.
+ ARG tabstops from the `current-column'"
   (interactive "p")
   (or arg (setq arg 1))
-  (hare-mode-do-indent
+  (hare-mode--do-indent
    (indent-next-tab-stop
     (save-excursion (back-to-indentation) (current-column)) t)))
 
 (defun hare-mode--backward-token ()
+  "Same as `smie-default-backward-token'.
+
+Expand this further on to get better parsing.  Put things in here
+before changing the `hare-mode--smie-grammar'."
   (forward-comment (- (point)))
   (buffer-substring-no-properties
    (point)
@@ -156,6 +174,10 @@
      (point))))
 
 (defun hare-mode--forward-token ()
+  "Same as `smie-default-forward-token'.
+
+Expand this further on to get better parsing.  Put things in here
+before changing the `hare-mode--smie-grammar'."
   (forward-comment (point-max))
   (buffer-substring-no-properties
    (point)
@@ -164,7 +186,7 @@
          (skip-syntax-forward "w_'"))
      (point))))
 
-(defconst hare-mode-smie-grammar
+(defconst hare-mode--smie-grammar
   (smie-prec2->grammar
    (smie-merge-prec2s
     (smie-bnf->prec2
@@ -180,6 +202,10 @@
        (nonassoc "==" "!="))))))
 
 (defun hare-mode-smie-rules (kind token)
+  "Rules for the smie grammar.
+
+See info manual for the most thorough documentation of this
+feature."
   (pcase (cons kind token)
     (`(:elem . basic) hare-mode-indent-offset)
     (`(:after . ",") (smie-rule-separator kind))
@@ -197,7 +223,7 @@
   (setq-local indent-tabs-mode t)
   (when (boundp 'electric-indent-inhibit) (setq electric-indent-inhibit t))  
 
-  (smie-setup hare-mode-smie-grammar #'hare-mode-smie-rules
+  (smie-setup hare-mode--smie-grammar #'hare-mode-smie-rules
               :forward-token #'hare-mode--forward-token
               :backward-token #'hare-mode--backward-token)
 
