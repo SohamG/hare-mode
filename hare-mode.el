@@ -2,6 +2,7 @@
 
 ;; Copyright (C) 2020 Benjamín Buccianti
 ;; Copyright (C) 2020 Amin Bandali
+;; Copyright (C) 2020 Theodor Thornhill
 
 ;; Author: Benjamín Buccianti <benjamin@buccianti.dev>
 ;;         Amin Bandali <bandali@gnu.org>
