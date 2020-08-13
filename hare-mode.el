@@ -86,8 +86,8 @@
     (modify-syntax-entry ?\\ "\\" st)
 
     ;; comments
-    (modify-syntax-entry ?/  ". 14b" st)
-    (modify-syntax-entry ?*  ". 23n" st)
+    (modify-syntax-entry ?/ ". 12" st)
+    (modify-syntax-entry ?\n  ">" st)
 
     ;; @ is part of symbols in Hare
     (modify-syntax-entry ?@ "_" st)
@@ -235,8 +235,8 @@ documentation of this feature."
   (setq-local end-of-defun-function #'hare-mode-end-of-defun)
 
   (setq-local font-lock-defaults hare-mode-font-lock-defaults)
-  (setq-local comment-start "/*")
-  (setq-local comment-end "*/")
+  (setq-local comment-start "//")
+  (setq-local comment-end "")
   (setq imenu-generic-expression hare-mode-imenu-generic-expression)
   (font-lock-ensure))
 
