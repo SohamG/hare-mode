@@ -3,10 +3,12 @@
 ;; Copyright (C) 2020 Benjamín Buccianti
 ;; Copyright (C) 2020 Amin Bandali
 ;; Copyright (C) 2020 Theodor Thornhill
+;; Copyright (C) 2022 Sebastian
 
 ;; Author: Benjamín Buccianti <benjamin@buccianti.dev>
 ;;         Amin Bandali <bandali@gnu.org>
 ;;         Theodor Thornhill <theo@thornhill.no>
+;;         Sebastian <sebastian@sebsite.pw>
 ;; Keywords: languages
 ;; URL: https://git.sr.ht/~bbuccianti/hare-mode
 ;; Version: 0.1.0
@@ -35,22 +37,23 @@
 (defvar hare-mode-keywords
   '("as" "break" "const" "continue" "def" "else" "export" "fn" "for"
     "if" "is" "let" "match" "return" "size" "static" "switch" "use"
-    "while")
+    "_" "defer" "yield" "case" "type")
   "Keywords used in `hare-mode'.")
 
 (defvar hare-mode-types
   '("u8" "u16" "u32" "u64" "i8" "i16" "i32" "i64" "int" "uint"
     "uintptr" "f32" "f64" "bool" "char" "str" "void" "struct" "union"
-    "nullable")
+    "nullable" "null" "valist" "rune" "enum")
   "Types used in `hare-mode'.")
 
 (defvar hare-mode-constants
-  '("null" "true" "false")
+  '("true" "false")
   "Constants used in `hare-mode'.")
 
 (defvar hare-mode-builtins
-  '("@init" "@symbol" "@test" "@fini" "len" "offset" "free" "alloc"
-    "assert")
+  '("@init" "@symbol" "@test" "@fini" "@offset" "@noreturn" "len"
+    "offset" "free" "alloc" "assert" "vastart" "vaarg" "vaend" "append"
+    "insert" "delete" "abort")
   "Built in identifiers used in `hare-mode'.")
 
 (defconst hare-mode--regexp-declaration-line-beginning
