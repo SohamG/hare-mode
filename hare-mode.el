@@ -51,9 +51,9 @@
   "Constants used in `hare-mode'.")
 
 (defvar hare-mode-builtins
-  '("@init" "@symbol" "@test" "@fini" "@offset" "@noreturn" "len"
-    "offset" "free" "alloc" "assert" "vastart" "vaarg" "vaend" "append"
-    "insert" "delete" "abort")
+  '("@init" "@symbol" "@packed" "@test" "@fini" "@offset" "@noreturn" "len"
+    "offset" "free" "alloc" "assert" "vastart" "vaarg" "vaend"
+    "append" "insert" "delete" "abort")
   "Built in identifiers used in `hare-mode'.")
 
 (defconst hare-mode--regexp-declaration-line-beginning
