@@ -4,14 +4,16 @@
 ;; Copyright (C) 2020 Amin Bandali
 ;; Copyright (C) 2020 Theodor Thornhill
 ;; Copyright (C) 2022 Sebastian
+;; Copyright (C) 2024 Soham S Gumaste
 
 ;; Author: Benjamín Buccianti <benjamin@buccianti.dev>
 ;;         Amin Bandali <bandali@gnu.org>
 ;;         Theodor Thornhill <theo@thornhill.no>
 ;;         Sebastian <sebastian@sebsite.pw>
+;;         Soham S Gumaste <sohamg2@gmail.com>
 ;; Keywords: languages
 ;; URL: https://git.sr.ht/~bbuccianti/hare-mode
-;; Version: 0.1.0
+;; Version: 0.2.0
 
 ;; Hare mode is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published
@@ -69,7 +71,6 @@
 
 (defvar hare-mode-map
    (let ((map (make-sparse-keymap)))
-     (define-key map (kbd "<tab>") 'hare-mode-indent-forward)
      (define-key map (kbd "<backtab>") 'hare-mode-indent-backward)
      map)
    "Keymap for `hare-mode'.")
@@ -215,10 +216,18 @@ or a custom made one.  See info manual for the most thorough
 documentation of this feature."
   (pcase (cons kind token)
     (`(:elem . basic) hare-mode-indent-offset)
+    (`(:elem . arg) hare-mode-indent-offset)
     (`(:after . ",") (smie-rule-separator kind))
-    (`(:before . ";") (smie-rule-parent))
-    (`(:after . ";") (smie-rule-separator kind))
-    (`(:before . ,(or "(" "[" "{")) (if (smie-rule-hanging-p) (smie-rule-parent)))
+    (`(:after . ";") (if (not (smie-rule-hanging-p))
+                         (smie-rule-separator kind)))
+    (`(:before . ,(or "(" "[" "{"))
+     (if (smie-rule-hanging-p)
+         (smie-rule-parent (- 0 hare-mode-indent-offset))))
+    (`(:after . ,(or "(" "[" "{"))
+     (if (smie-rule-hanging-p) (smie-rule-parent hare-mode-indent-offset)))
+    (`(:after . ,(or ")" "]" "}"))
+     (smie-rule-parent (- 0 hare-mode-indent-offset)))
+    (`(:close-all . ,(or ")" "]" "}")) nil)
     (`(:before . "=") (if (smie-rule-hanging-p) hare-mode-indent-offset))))
 
 ;;;###autoload
@@ -228,11 +237,15 @@ documentation of this feature."
 
   (setq-local tab-width hare-mode-indent-offset)
   (setq-local indent-tabs-mode t)
+  ;; Do not rebind <tab> as that key has multiple meanings in
+  ;; different contexts.
   (when (boundp 'electric-indent-inhibit) (setq electric-indent-inhibit t))
 
   (smie-setup hare-mode--smie-grammar #'hare-mode-smie-rules
               :forward-token #'hare-mode--forward-token
               :backward-token #'hare-mode--backward-token)
+
+  (setq-local indent-line-function #'smie-indent-line)
 
   (setq-local beginning-of-defun-function #'hare-mode-beginning-of-defun)
   (setq-local end-of-defun-function #'hare-mode-end-of-defun)
